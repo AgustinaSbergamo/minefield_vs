@@ -1,15 +1,16 @@
 #pragma once
-#include <vector>
+#include <minefield/shared.h>
+
+#include <functional>
 #include <iostream>
 #include <random>
-#include <functional>
 #include <string>
-#include <minefield/shared.h>
+#include <vector>
 
 struct State;
 struct GameContext;
 using NextState = State;
-using StateUpdateFn = NextState(*)(GameContext &);
+using StateUpdateFn = NextState (*)(GameContext&);
 
 struct State
 {
@@ -50,7 +51,7 @@ struct RandomGenerator
     }
 };
 
-typedef std::function<int(int, int)> RandomGenerationFn;
+using RandomGenerationFn = std::function<int(int, int)>;
 
 struct GameContext
 {

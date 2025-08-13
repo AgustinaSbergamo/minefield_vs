@@ -1,5 +1,4 @@
 #include <minefield/minefield.h>
-#include <minefield/setup_game.h>
 #include <minefield/shared.h>
 #include <minefield/show_board.h>
 #include <iostream>
