@@ -32,7 +32,7 @@ void randomMineSelection(int selectionSize, std::vector<unsigned int> &randomSel
     }
 }
 
-void manualMineSelection(int selectionSize, std::vector<unsigned int> &minesVector, const std::vector<unsigned int> &availableCells)
+void manualMineSelection(int selectionSize, std::vector<unsigned int> &minesVector, const std::vector<unsigned int> &availableCells, GetInputFn<unsigned int> getInput)
 {
     minesVector.clear();
     for (int i = 0; i < selectionSize; ++i)
@@ -43,14 +43,7 @@ void manualMineSelection(int selectionSize, std::vector<unsigned int> &minesVect
         while (!validSelectedCell)
         {
             std::cout << "Enter cell #" << (i + 1) << ": ";
-            std::cin >> selectedCell;
-
-            if (std::cin.fail())
-            {
-                clearStandardInput();
-                std::cout << "Oops! That doesn't look like a number. Try again!" << std::endl;
-                continue;
-            }
+            selectedCell = getInput();
 
             if (std::find(availableCells.begin(), availableCells.end(), selectedCell) == availableCells.end())
             {
@@ -66,6 +59,7 @@ void manualMineSelection(int selectionSize, std::vector<unsigned int> &minesVect
 
             validSelectedCell = true;
         }
+
         minesVector.push_back(selectedCell);
     }
 }
@@ -97,7 +91,7 @@ NextState selectGuesses(GameContext &context)
             printMineSelection(player.mines);
 
             std::cout << "You've got " << minesToGuess << " guess(es) --just as many as the mines your most dangerous rival has left. Where will you shoot?" << std::endl;
-            manualMineSelection(minesToGuess, player.guesses, context.board.availableCells);
+            manualMineSelection(minesToGuess, player.guesses, context.board.availableCells, getInputFromCin);
         }
         else
         {
@@ -117,7 +111,7 @@ NextState selectMines(GameContext &context)
         if (player.type == PlayerType::Human)
         {
             std::cout << player.name << " it's your turn! Pick " << player.mines.size() << " spot(s) to hide your mine(s)" << std::endl;
-            manualMineSelection(player.mines.size(), player.mines, context.board.availableCells);
+            manualMineSelection(player.mines.size(), player.mines, context.board.availableCells, getInputFromCin);
         }
         else
         {
