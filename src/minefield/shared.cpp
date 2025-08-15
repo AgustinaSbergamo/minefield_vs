@@ -1,4 +1,5 @@
 #include <minefield/shared.h>
+
 #include <iostream>
 #include <random>
 
