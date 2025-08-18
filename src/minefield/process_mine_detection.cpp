@@ -1,29 +1,31 @@
-#include <iostream>
-#include <vector>
-#include <set>
 #include <minefield/process_mine_detection.h>
 #include <minefield/process_round_result.h>
+#include <minefield/shared.h>
 
-void printExplodedMinesMessage(const std::set<unsigned int> &explodedMines, const std::string &playerName)
+#include <iostream>
+#include <set>
+#include <vector>
+
+void printExplodedMinesMessage(std::set<unsigned int> const& explodedMines, std::string const& playerName, std::ostream& outputStream)
 {
     if (!explodedMines.empty())
     {
-        std::cout << playerName << ", you lost your mine(s) at spot(s) ";
+        printMessage(outputStream, playerName, ", you lost your mine(s) at spot(s) ");
         for (auto it = explodedMines.begin(); it != explodedMines.end(); ++it)
         {
-            std::cout << *it;
+            printMessage(outputStream, *it);
             if (std::next(it) != explodedMines.end())
             {
-                std::cout << ", ";
+                printMessage(outputStream, ", ");
             }
         }
-        std::cout << '.' << std::endl;
+        printMessage(outputStream, ".\n");
     }
 }
 
-void disableCell(std::vector<int> &cells, int cell)
+void disableCell(std::vector<int>& cells, int cell)
 {
-    static const int kDisabledCell = -1;
+    static int const kDisabledCell = -1;
     auto cellToDisable = std::find(cells.begin(), cells.end(), cell);
     if (cellToDisable != cells.end())
     {
@@ -31,7 +33,7 @@ void disableCell(std::vector<int> &cells, int cell)
     }
 }
 
-void disableUsedCells(std::unordered_set<unsigned int> usedCells, Board &board)
+void disableUsedCells(std::unordered_set<unsigned int> usedCells, Board& board)
 {
     for (unsigned int cell : usedCells)
     {
@@ -40,7 +42,7 @@ void disableUsedCells(std::unordered_set<unsigned int> usedCells, Board &board)
     }
 }
 
-void resizePlayerMineCount(std::unordered_map<Player *, int> playerExplodedMineCount)
+void resizePlayerMineCount(std::unordered_map<Player*, int> playerExplodedMineCount)
 {
     for (auto [playerPtr, count] : playerExplodedMineCount)
     {
@@ -51,7 +53,7 @@ void resizePlayerMineCount(std::unordered_map<Player *, int> playerExplodedMineC
     }
 }
 
-std::set<unsigned int> getExplodedMines(const std::vector<unsigned int> &minesToCheck, const std::vector<unsigned int> &minesToMatchAgainst)
+std::set<unsigned int> getExplodedMines(std::vector<unsigned int> const& minesToCheck, std::vector<unsigned int> const& minesToMatchAgainst)
 {
     std::set<unsigned int> explodedMines;
 
@@ -68,15 +70,15 @@ std::set<unsigned int> getExplodedMines(const std::vector<unsigned int> &minesTo
     return explodedMines;
 }
 
-NextState processMineDetection(GameContext &context)
+NextState processMineDetection(GameContext& context)
 {
     std::unordered_set<unsigned int> boardUsedCells;
-    std::unordered_map<Player *, int> playerExplodedMineCount;
+    std::unordered_map<Player*, int> playerExplodedMineCount;
 
-    for (Player &player : context.players)
+    for (Player& player : context.players)
     {
         std::set<unsigned int> explodedMines = getExplodedMines(player.mines, player.guesses); // self hits
-        for (Player &rival : context.players)
+        for (Player& rival : context.players)
         {
             if (&player != &rival)
             {
@@ -88,7 +90,7 @@ NextState processMineDetection(GameContext &context)
             }
         }
 
-        printExplodedMinesMessage(explodedMines, player.name);
+        printExplodedMinesMessage(explodedMines, player.name, context.outputStream);
 
         for (unsigned int cell : player.mines)
         {

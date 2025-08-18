@@ -1,9 +1,9 @@
 #pragma once
-#include <random>
 #include <iostream>
+#include <random>
 
-template<typename T>
-using GetInputFn = T(*)();
+template <typename T>
+using GetInputFn = T (*)();
 
 template <typename T>
 T getInputFromCin()
@@ -18,8 +18,15 @@ T getInputFromCin()
         }
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cout << "Invalid input! Try again: ";
+        //TODO
+        //printMessage("Invalid input! Try again: ");
     }
+}
+
+template <typename... Args>
+void printMessage(std::ostream& outputStream, Args&&... args)
+{
+    (outputStream << ... << args);
 }
 
 void clearStandardInput();

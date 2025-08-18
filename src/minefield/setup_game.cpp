@@ -1,10 +1,12 @@
 #include <minefield/minefield.h>
+#include <minefield/setup_game.h>
 #include <minefield/shared.h>
 #include <minefield/show_board.h>
+
 #include <iostream>
 #include <limits>
 
-int readIntInRange(unsigned int min, unsigned int max, GetInputFn<unsigned int> getInput)
+int readIntInRange(unsigned int min, unsigned int max, std::ostream& outputStream, GetInputFn<unsigned int> getInput)
 {
     unsigned int input = 0;
     bool validInput = false;
@@ -15,13 +17,13 @@ int readIntInRange(unsigned int min, unsigned int max, GetInputFn<unsigned int> 
         validInput = input >= min && input <= max;
         if (!validInput)
         {
-            std::cout << "Too wild! Choose something in the safe zone: " << min << " to " << max << std::endl;
+            printMessage(outputStream, "Too wild! Choose something in the safe zone: ", min, " to ", max, "\n");
         }
     }
     return input;
 }
 
-void createPlayers(GameContext& context, unsigned int humanPlayers, unsigned int computerPlayers, GetInputFn<std::string> getInput)
+void createPlayers(GameContext& context, unsigned int humanPlayers, unsigned int computerPlayers, std::ostream& outputStream, GetInputFn<std::string> getInput)
 {
     context.players.clear();
     std::vector<std::string> usedNames;
@@ -34,13 +36,13 @@ void createPlayers(GameContext& context, unsigned int humanPlayers, unsigned int
 
         while (!validName)
         {
-            std::cout << "What's the name of human player #" << playerNumber << "? ";
+            printMessage(outputStream, "What's the name of human player #", playerNumber, "? ");
             name = getInput();
 
             validName = std::find(usedNames.begin(), usedNames.end(), name) == usedNames.end();
             if (!validName)
             {
-                std::cout << "That name already exists. Please choose a different one!";
+                printMessage(outputStream, "That name already exists. Please choose a different one!\n");
             }
             else
             {
@@ -61,7 +63,7 @@ void createPlayers(GameContext& context, unsigned int humanPlayers, unsigned int
         Player player;
         player.name = "Computer_" + std::to_string(i + 1);
         player.type = PlayerType::Computer;
-        std::cout << "Our creative team (the compiler) named computer player #" << playerNumber << ": " << player.name << std::endl;
+        printMessage(outputStream, "Our creative team (the compiler) named computer player #", playerNumber, ": ", player.name, "\n");
         context.players.push_back(player);
         ++playerNumber;
     }
@@ -69,28 +71,27 @@ void createPlayers(GameContext& context, unsigned int humanPlayers, unsigned int
 
 NextState setupGame(GameContext& context)
 {
-    std::cout << "=================================" << std::endl;
-    std::cout << "Welcome to Minefield, brave soul!" << std::endl;
-    std::cout << "=================================" << std::endl;
-    std::cout << "Let's start defining the basics of the game" << std::endl;
+    printMessage(context.outputStream,
+        "=================================\nWelcome to Minefield, brave soul!\n=================================\nLet's start defining the basics of the "
+        "game\n");
 
-    std::cout << "First things first: how many human players will be joining the game? (up to 5!)" << std::endl;
-    int humanPlayers = readIntInRange(1, 5, getInputFromCin);
+    printMessage(context.outputStream, "First things first: how many human players will be joining the game? (up to 5!)\n");
+    int humanPlayers = readIntInRange(1, 5, context.outputStream);
 
-    std::cout << "And how many fearless computer-controlled players shall we unleash? (again, no more than 5)" << std::endl;
-    int computerPlayers = readIntInRange(0, 5, getInputFromCin);
+    printMessage(context.outputStream, "And how many fearless computer-controlled players shall we unleash? (again, no more than 5)\n");
+    int computerPlayers = readIntInRange(0, 5, context.outputStream);
 
-    std::cout << "Perfect! That makes us " << humanPlayers + computerPlayers << ". Now, to keep things organized, let's name our heroes." << std::endl;
-    createPlayers(context, humanPlayers, computerPlayers, getInputFromCin);
+    printMessage(context.outputStream, "Perfect! That makes us ", (humanPlayers + computerPlayers), ". Now, to keep things organized, let's name our heroes\n");
+    createPlayers(context, humanPlayers, computerPlayers, context.outputStream);
 
-    std::cout << "Let's craft the board now. How many tiles across? (it should be a number between 24 and 50)" << std::endl;
-    context.board.width = readIntInRange(24, 50, getInputFromCin);
+    printMessage(context.outputStream, "Let's craft the board now. How many tiles across? (it should be a number between 24 and 50)\n");
+    context.board.width = readIntInRange(24, 50, context.outputStream);
 
-    std::cout << "Now, how many tiles from top to bottom? (again, between 24 and 50)" << std::endl;
-    context.board.height = readIntInRange(24, 50, getInputFromCin);
+    printMessage(context.outputStream, "Now, how many tiles from top to bottom? (again, between 24 and 50)\n");
+    context.board.height = readIntInRange(24, 50, context.outputStream);
 
-    std::cout << "Final step: how many mines should we drop? (let's say, between 3 and 8)" << std::endl;
-    context.board.initialMines = readIntInRange(3, 8, getInputFromCin);
+    printMessage(context.outputStream, "Final step: how many mines should we drop? (let's say, between 3 and 8)\n");
+    context.board.initialMines = readIntInRange(3, 8, context.outputStream);
 
     for (Player& player : context.players)
     {

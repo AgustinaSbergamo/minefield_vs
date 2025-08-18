@@ -2,5 +2,5 @@
 
 NextState exitGame(GameContext&)
 {
-    return { nullptr };
+    return {nullptr};
 }
