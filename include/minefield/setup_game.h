@@ -7,9 +7,4 @@ int readIntInRange(unsigned int min,
     std::ostream& outputStream,
     std::istream& inputStream,
     GetInputFn<unsigned int> getInput = getInputFromStream);
-void createPlayers(GameContext& context,
-    unsigned int humanPlayers,
-    unsigned int computerPlayers,
-    std::ostream& outputStream,
-    std::istream& inputStream,
-    GetInputFn<std::string> getInput = getInputFromStream);
+void createPlayers(GameContext& context, unsigned int humanPlayers, unsigned int computerPlayers, GetInputFn<std::string> getInput = getInputFromStream);

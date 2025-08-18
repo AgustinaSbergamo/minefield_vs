@@ -23,12 +23,7 @@ int readIntInRange(unsigned int min, unsigned int max, std::ostream& outputStrea
     return input;
 }
 
-void createPlayers(GameContext& context,
-    unsigned int humanPlayers,
-    unsigned int computerPlayers,
-    std::ostream& outputStream,
-    std::istream& inputStream,
-    GetInputFn<std::string> getInput)
+void createPlayers(GameContext& context, unsigned int humanPlayers, unsigned int computerPlayers, GetInputFn<std::string> getInput)
 {
     context.players.clear();
     std::vector<std::string> usedNames;
@@ -41,13 +36,13 @@ void createPlayers(GameContext& context,
 
         while (!validName)
         {
-            printMessage(outputStream, "What's the name of human player #", playerNumber, "? ");
-            name = getInput(inputStream, outputStream);
+            printMessage(context.outputStream, "What's the name of human player #", playerNumber, "? ");
+            name = getInput(context.inputStream, context.outputStream);
 
             validName = std::find(usedNames.begin(), usedNames.end(), name) == usedNames.end();
             if (!validName)
             {
-                printMessage(outputStream, "That name already exists. Please choose a different one!\n");
+                printMessage(context.outputStream, "That name already exists. Please choose a different one!\n");
             }
             else
             {
@@ -68,7 +63,7 @@ void createPlayers(GameContext& context,
         Player player;
         player.name = "Computer_" + std::to_string(i + 1);
         player.type = PlayerType::Computer;
-        printMessage(outputStream, "Our creative team (the compiler) named computer player #", playerNumber, ": ", player.name, "\n");
+        printMessage(context.outputStream, "Our creative team (the compiler) named computer player #", playerNumber, ": ", player.name, "\n");
         context.players.push_back(player);
         ++playerNumber;
     }
@@ -88,7 +83,7 @@ NextState setupGame(GameContext& context)
     int computerPlayers = readIntInRange(minComputerPlayers, 5, context.outputStream, context.inputStream);
 
     printMessage(context.outputStream, "Perfect! That makes us ", (humanPlayers + computerPlayers), ". Now, to keep things organized, let's name our heroes\n");
-    createPlayers(context, humanPlayers, computerPlayers, context.outputStream, context.inputStream);
+    createPlayers(context, humanPlayers, computerPlayers);
 
     printMessage(context.outputStream, "Let's craft the board now. How many tiles across? (it should be a number between 24 and 50)\n");
     context.board.width = readIntInRange(24, 50, context.outputStream, context.inputStream);

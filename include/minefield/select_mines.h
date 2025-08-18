@@ -10,6 +10,7 @@ void manualMineSelection(int selectionSize,
     std::vector<unsigned int>& minesVector,
     std::vector<unsigned int> const& availableCells,
     std::ostream& outputStream,
+    std::istream& inputStream,
     GetInputFn<unsigned int> getInput);
 void randomMineSelection(int selectionSize,
     std::vector<unsigned int>& randomSelection,
