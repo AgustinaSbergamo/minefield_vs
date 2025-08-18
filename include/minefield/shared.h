@@ -3,24 +3,29 @@
 #include <random>
 
 template <typename T>
-using GetInputFn = T (*)();
+using GetInputFn = T (*)(std::istream&, std::ostream&);
 
 template <typename T>
-T getInputFromCin()
+T getInputFromStream(std::istream& inputStream, std::ostream& outputStream)
 {
     T value;
-    while (true)
+    bool validInput = false;
+
+    while (!validInput)
     {
-        std::cin >> value;
-        if (!std::cin.fail())
+        inputStream >> value;
+        if (!inputStream.fail())
         {
-            return value;
+            validInput = true;
         }
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        //TODO
-        //printMessage("Invalid input! Try again: ");
+        else
+        {
+            inputStream.clear();
+            inputStream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            outputStream << "Invalid input! Try again: ";
+        }
     }
+    return value;
 }
 
 template <typename... Args>

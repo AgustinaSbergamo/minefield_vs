@@ -40,6 +40,7 @@ void manualMineSelection(int selectionSize,
     std::vector<unsigned int>& minesVector,
     std::vector<unsigned int> const& availableCells,
     std::ostream& outputStream,
+    std::istream& inputStream,
     GetInputFn<unsigned int> getInput)
 {
     minesVector.clear();
@@ -51,7 +52,7 @@ void manualMineSelection(int selectionSize,
         while (!validSelectedCell)
         {
             printMessage(outputStream, "Enter cell #", (i + 1), ": ");
-            selectedCell = getInput();
+            selectedCell = getInput(inputStream, outputStream);
 
             if (std::find(availableCells.begin(), availableCells.end(), selectedCell) == availableCells.end())
             {
@@ -99,7 +100,7 @@ NextState selectGuesses(GameContext& context)
 
             printMessage(context.outputStream, "\nYou've got ", minesToGuess,
                 " guess(es) --just as many as the mines your most dangerous rival has left. Where will you shoot?\n");
-            manualMineSelection(minesToGuess, player.guesses, context.board.availableCells, context.outputStream, getInputFromCin);
+            manualMineSelection(minesToGuess, player.guesses, context.board.availableCells, context.outputStream, context.inputStream, getInputFromStream);
         }
         else
         {
@@ -119,7 +120,7 @@ NextState selectMines(GameContext& context)
         if (player.type == PlayerType::Human)
         {
             printMessage(context.outputStream, player.name, " it's your turn! Pick ", player.mines.size(), " spot(s) to hide your mine(s)\n");
-            manualMineSelection(player.mines.size(), player.mines, context.board.availableCells, context.outputStream, getInputFromCin);
+            manualMineSelection(player.mines.size(), player.mines, context.board.availableCells, context.outputStream, context.inputStream, getInputFromStream);
         }
         else
         {
