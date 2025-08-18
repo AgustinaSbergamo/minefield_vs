@@ -84,7 +84,8 @@ NextState setupGame(GameContext& context)
     int humanPlayers = readIntInRange(1, 5, context.outputStream, context.inputStream);
 
     printMessage(context.outputStream, "And how many fearless computer-controlled players shall we unleash? (again, no more than 5)\n");
-    int computerPlayers = readIntInRange(0, 5, context.outputStream, context.inputStream);
+    int minComputerPlayers = (humanPlayers > 1) ? 0 : 1;
+    int computerPlayers = readIntInRange(minComputerPlayers, 5, context.outputStream, context.inputStream);
 
     printMessage(context.outputStream, "Perfect! That makes us ", (humanPlayers + computerPlayers), ". Now, to keep things organized, let's name our heroes\n");
     createPlayers(context, humanPlayers, computerPlayers, context.outputStream, context.inputStream);
