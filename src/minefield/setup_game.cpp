@@ -6,14 +6,14 @@
 #include <iostream>
 #include <limits>
 
-int readIntInRange(unsigned int min, unsigned int max, std::ostream& outputStream, GetInputFn<unsigned int> getInput)
+int readIntInRange(unsigned int min, unsigned int max, std::ostream& outputStream, std::istream& inputStream, GetInputFn<unsigned int> getInput)
 {
     unsigned int input = 0;
     bool validInput = false;
 
     while (!validInput)
     {
-        input = getInput();
+        input = getInput(inputStream, outputStream);
         validInput = input >= min && input <= max;
         if (!validInput)
         {
@@ -23,7 +23,7 @@ int readIntInRange(unsigned int min, unsigned int max, std::ostream& outputStrea
     return input;
 }
 
-void createPlayers(GameContext& context, unsigned int humanPlayers, unsigned int computerPlayers, std::ostream& outputStream, GetInputFn<std::string> getInput)
+void createPlayers(GameContext& context, unsigned int humanPlayers, unsigned int computerPlayers, GetInputFn<std::string> getInput)
 {
     context.players.clear();
     std::vector<std::string> usedNames;
@@ -36,13 +36,13 @@ void createPlayers(GameContext& context, unsigned int humanPlayers, unsigned int
 
         while (!validName)
         {
-            printMessage(outputStream, "What's the name of human player #", playerNumber, "? ");
-            name = getInput();
+            printMessage(context.outputStream, "What's the name of human player #", playerNumber, "? ");
+            name = getInput(context.inputStream, context.outputStream);
 
             validName = std::find(usedNames.begin(), usedNames.end(), name) == usedNames.end();
             if (!validName)
             {
-                printMessage(outputStream, "That name already exists. Please choose a different one!\n");
+                printMessage(context.outputStream, "That name already exists. Please choose a different one!\n");
             }
             else
             {
@@ -63,7 +63,7 @@ void createPlayers(GameContext& context, unsigned int humanPlayers, unsigned int
         Player player;
         player.name = "Computer_" + std::to_string(i + 1);
         player.type = PlayerType::Computer;
-        printMessage(outputStream, "Our creative team (the compiler) named computer player #", playerNumber, ": ", player.name, "\n");
+        printMessage(context.outputStream, "Our creative team (the compiler) named computer player #", playerNumber, ": ", player.name, "\n");
         context.players.push_back(player);
         ++playerNumber;
     }
@@ -76,22 +76,23 @@ NextState setupGame(GameContext& context)
         "game\n");
 
     printMessage(context.outputStream, "First things first: how many human players will be joining the game? (up to 5!)\n");
-    int humanPlayers = readIntInRange(1, 5, context.outputStream);
+    int humanPlayers = readIntInRange(1, 5, context.outputStream, context.inputStream);
 
     printMessage(context.outputStream, "And how many fearless computer-controlled players shall we unleash? (again, no more than 5)\n");
-    int computerPlayers = readIntInRange(0, 5, context.outputStream);
+    int minComputerPlayers = (humanPlayers > 1) ? 0 : 1;
+    int computerPlayers = readIntInRange(minComputerPlayers, 5, context.outputStream, context.inputStream);
 
     printMessage(context.outputStream, "Perfect! That makes us ", (humanPlayers + computerPlayers), ". Now, to keep things organized, let's name our heroes\n");
-    createPlayers(context, humanPlayers, computerPlayers, context.outputStream);
+    createPlayers(context, humanPlayers, computerPlayers);
 
     printMessage(context.outputStream, "Let's craft the board now. How many tiles across? (it should be a number between 24 and 50)\n");
-    context.board.width = readIntInRange(24, 50, context.outputStream);
+    context.board.width = readIntInRange(24, 50, context.outputStream, context.inputStream);
 
     printMessage(context.outputStream, "Now, how many tiles from top to bottom? (again, between 24 and 50)\n");
-    context.board.height = readIntInRange(24, 50, context.outputStream);
+    context.board.height = readIntInRange(24, 50, context.outputStream, context.inputStream);
 
     printMessage(context.outputStream, "Final step: how many mines should we drop? (let's say, between 3 and 8)\n");
-    context.board.initialMines = readIntInRange(3, 8, context.outputStream);
+    context.board.initialMines = readIntInRange(3, 8, context.outputStream, context.inputStream);
 
     for (Player& player : context.players)
     {

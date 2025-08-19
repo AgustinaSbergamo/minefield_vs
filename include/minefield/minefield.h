@@ -60,4 +60,5 @@ struct GameContext
     std::vector<Player> players;
     RandomGenerationFn randomGenerator = RandomGenerator{};
     std::ostream& outputStream = std::cout;
+    std::istream& inputStream = std::cin;
 };
