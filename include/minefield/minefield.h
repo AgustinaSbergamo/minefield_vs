@@ -59,6 +59,9 @@ struct GameContext
     Board board;
     std::vector<Player> players;
     RandomGenerationFn randomGenerator = RandomGenerator{};
-    std::ostream& outputStream = std::cout;
-    std::istream& inputStream = std::cin;
+    struct IO
+    {
+        std::reference_wrapper<std::ostream> outputStream = std::cout;
+        std::reference_wrapper<std::istream> inputStream = std::cin;
+    } io;
 };
