@@ -90,7 +90,7 @@ NextState processMineDetection(GameContext& context)
             }
         }
 
-        printExplodedMinesMessage(explodedMines, player.name, context.outputStream);
+        printExplodedMinesMessage(explodedMines, player.name, context.io.outputStream);
 
         for (unsigned int cell : player.mines)
         {

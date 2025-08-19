@@ -23,7 +23,7 @@ NextState processRoundResult(GameContext& context)
     unsigned int maxMineCount = getMaxMineCount(context.players);
     if (maxMineCount > context.board.availableCells.size())
     {
-        printMessage(context.outputStream,
+        printMessage(context.io.outputStream,
             "It looks like the available cells on the board are not enough to keep playing. We'll have to call it a tie between the remaining players and "
             "start over!\n");
         return {&exitGame};
@@ -33,7 +33,7 @@ NextState processRoundResult(GameContext& context)
     {
         if (iterator->mines.empty())
         {
-            printMessage(context.outputStream, iterator->name, " got completely mined out!\n");
+            printMessage(context.io.outputStream, iterator->name, " got completely mined out!\n");
             iterator = context.players.erase(iterator);
         }
         else
@@ -44,17 +44,17 @@ NextState processRoundResult(GameContext& context)
 
     if (context.players.empty())
     {
-        printMessage(context.outputStream, "A perfect tie, in total destruction. No mines, no survivors!\n");
+        printMessage(context.io.outputStream, "A perfect tie, in total destruction. No mines, no survivors!\n");
         return {&exitGame};
     }
     else if (context.players.size() == 1)
     {
-        printMessage(context.outputStream, context.players[0].name, " takes the crown! The sole survivor of the minefield!\n");
+        printMessage(context.io.outputStream, context.players[0].name, " takes the crown! The sole survivor of the minefield!\n");
         return {&exitGame};
     }
     else
     {
-        printMessage(context.outputStream, context.players.size(), " players still in the game. Next round begins!\n");
+        printMessage(context.io.outputStream, context.players.size(), " players still in the game. Next round begins!\n");
         return {&showBoard};
     }
 }

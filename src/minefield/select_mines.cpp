@@ -39,8 +39,7 @@ void randomMineSelection(int selectionSize,
 void manualMineSelection(int selectionSize,
     std::vector<unsigned int>& minesVector,
     std::vector<unsigned int> const& availableCells,
-    std::ostream& outputStream,
-    std::istream& inputStream,
+    GameContext::IO& io,
     GetInputFn<unsigned int> getInput)
 {
     minesVector.clear();
@@ -51,18 +50,18 @@ void manualMineSelection(int selectionSize,
 
         while (!validSelectedCell)
         {
-            printMessage(outputStream, "Enter cell #", (i + 1), ": ");
-            selectedCell = getInput(inputStream, outputStream);
+            printMessage(io.outputStream, "Enter cell #", (i + 1), ": ");
+            selectedCell = getInput(io.inputStream, io.outputStream);
 
             if (std::find(availableCells.begin(), availableCells.end(), selectedCell) == availableCells.end())
             {
-                printMessage(outputStream, "Cell ", selectedCell, " is disabled! Please choose another one\n");
+                printMessage(io.outputStream, "Cell ", selectedCell, " is disabled! Please choose another one\n");
                 continue;
             }
 
             if (std::find(minesVector.begin(), minesVector.end(), selectedCell) != minesVector.end())
             {
-                printMessage(outputStream, "You already picked cell ", std::to_string(selectedCell), ". Please choose a different one!\n");
+                printMessage(io.outputStream, "You already picked cell ", std::to_string(selectedCell), ". Please choose a different one!\n");
                 continue;
             }
 
@@ -89,18 +88,18 @@ unsigned int getRivalsMaxMineCount(Player const& player, std::vector<Player> con
 NextState selectGuesses(GameContext& context)
 {
     printMessage(
-        context.outputStream, "Alright, it's time to strike!\nRemember: if you pick the spots where you hid your own mines, you'll blow up your stash!\n");
+        context.io.outputStream, "Alright, it's time to strike!\nRemember: if you pick the spots where you hid your own mines, you'll blow up your stash!\n");
     for (Player& player : context.players)
     {
         unsigned int minesToGuess = getRivalsMaxMineCount(player, context.players);
         if (player.type == PlayerType::Human)
         {
-            printMessage(context.outputStream, player.name, ", just so you don't trip over your own traps: your mines are in spots ");
-            printMineSelection(player.mines, context.outputStream);
+            printMessage(context.io.outputStream, player.name, ", just so you don't trip over your own traps: your mines are in spots ");
+            printMineSelection(player.mines, context.io.outputStream);
 
-            printMessage(context.outputStream, "\nYou've got ", minesToGuess,
+            printMessage(context.io.outputStream, "\nYou've got ", minesToGuess,
                 " guess(es) --just as many as the mines your most dangerous rival has left. Where will you shoot?\n");
-            manualMineSelection(minesToGuess, player.guesses, context.board.availableCells, context.outputStream, context.inputStream, getInputFromStream);
+            manualMineSelection(minesToGuess, player.guesses, context.board.availableCells, context.io, getInputFromStream);
         }
         else
         {
@@ -119,8 +118,8 @@ NextState selectMines(GameContext& context)
     {
         if (player.type == PlayerType::Human)
         {
-            printMessage(context.outputStream, player.name, " it's your turn! Pick ", player.mines.size(), " spot(s) to hide your mine(s)\n");
-            manualMineSelection(player.mines.size(), player.mines, context.board.availableCells, context.outputStream, context.inputStream, getInputFromStream);
+            printMessage(context.io.outputStream, player.name, " it's your turn! Pick ", player.mines.size(), " spot(s) to hide your mine(s)\n");
+            manualMineSelection(player.mines.size(), player.mines, context.board.availableCells, context.io, getInputFromStream);
         }
         else
         {
