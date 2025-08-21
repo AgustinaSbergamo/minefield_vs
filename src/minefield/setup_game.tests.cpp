@@ -1,7 +1,31 @@
 #include <gtest/gtest.h>
-#include <minefield/setup_game.h>
 #include <minefield/minefield.h>
+#include <minefield/setup_game.h>
 #include <minefield/show_board.h>
+
+TEST(INPUT, input_validation_works_correctly) {
+
+	auto getOutputofReading = [](unsigned int min, unsigned int max, unsigned int value) {
+		std::string input = "";
+		input.append(std::to_string(value) + "\n");
+		if (value < min || value > max) {
+			input.append(std::to_string(max) + "\n");
+		}
+		std::cout << input << std::endl; 
+		std::istringstream fakeInput(input);
+		std::ostringstream fakeOutput;
+		GameContext context;
+		context.io.inputStream = fakeInput;
+		context.io.outputStream = fakeOutput;
+		readIntInRange(min, max, context.io);
+		return fakeOutput.str();
+	};
+	std::string expectedErrorMessage = "Too wild! Choose something in the safe zone";
+	EXPECT_EQ(getOutputofReading(0, 5, 3).find(expectedErrorMessage), std::string::npos);
+	EXPECT_NE(getOutputofReading(0, 5, 9).find(expectedErrorMessage), std::string::npos);
+	EXPECT_ANY_THROW(getOutputofReading(5, 0, 9).find(expectedErrorMessage), std::string::npos);
+
+}
 
 TEST(SETUP, game_is_set_up_correctly) { // made by agus to guide me, thanks agus!
 	std::istringstream fakeInput("1\n2\nRoberto\n24\n24\n3\n");
@@ -27,11 +51,11 @@ TEST(SETUP, board_does_not_accept_invalid_values) {
 	const int MAXWIDTH = 50;
 	const int MAXHEIGHT = 50;
 
-	auto buildInputString = [](int width, int height) { // build the string of player inputs for the game width and height definitions
+	auto buildInputString = [](int width, int height) {					  // build the string of player inputs for the game width and height definitions
 		auto buildDimensionString = [](int dimension, int dimensionMax) { // build the string of player inputs for each position
 			std::string gameDimensionInputString = "";
 			gameDimensionInputString.append(std::to_string(dimension) + "\n");
-			if (dimension > dimensionMax) // if this is the case, the program will output an error message and will ask for input again
+			if (dimension > dimensionMax)											  // if this is the case, the program will output an error message and will ask for input again
 				gameDimensionInputString.append(std::to_string(dimensionMax) + "\n"); // this time we create an input that will be accepted
 			return gameDimensionInputString;
 		};
@@ -44,7 +68,7 @@ TEST(SETUP, board_does_not_accept_invalid_values) {
 
 	auto getOutputWH = [buildInputString](int width, int height) { // build the whole input string
 		std::string input = "1\n2\nRoberto\n" + buildInputString(width, height) + "\n3\n ";
-		std::istringstream fakeInput(input); //fake input and output must be defined within each function and not in a common fixture because they will become inaccesible outside of the scope they were created in
+		std::istringstream fakeInput(input); // fake input and output must be defined within each function and not in a common fixture because they will become inaccesible outside of the scope they were created in
 		std::ostringstream fakeOutput;
 		GameContext context;
 		context.io.inputStream = fakeInput;
@@ -59,5 +83,5 @@ TEST(SETUP, board_does_not_accept_invalid_values) {
 	EXPECT_NE((getOutputWH(MAXWIDTH + 1, MAXHEIGHT)).find(expectedErrorMessage), std::string::npos);
 	EXPECT_NE((getOutputWH(MAXWIDTH, MAXHEIGHT + 1)).find(expectedErrorMessage), std::string::npos);
 	EXPECT_NE((getOutputWH(MAXWIDTH + 1, MAXHEIGHT + 1)).find(expectedErrorMessage), std::string::npos);
-	//will build for minimum values when agus defines dimension constraint values as global constants 
+	// will build for minimum values when agus defines dimension constraint values as global constants
 }

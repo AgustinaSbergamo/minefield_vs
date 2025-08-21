@@ -14,6 +14,7 @@ T getInputFromStream(std::istream& inputStream, std::ostream& outputStream)
     while (!validInput)
     {
         inputStream >> value;
+		std::cout << value << std::endl;
         if (!inputStream.fail())
         {
             validInput = true;
