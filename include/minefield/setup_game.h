@@ -1,11 +1,11 @@
 #pragma once
 #include "minefield.h"
 
-static const int MIN_BOARD_SIZE = 24; 
-static const int MAX_BOARD_SIZE = 50;
-static const int MIN_MINES = 3;
-static const int MAX_MINES = 8;
-static const int MAX_PLAYERS = 5;    
+static constexpr int MIN_BOARD_SIZE = 24; 
+static constexpr int MAX_BOARD_SIZE = 50;
+static constexpr int MIN_MINES = 3;
+static constexpr int MAX_MINES = 8;
+static constexpr int MAX_PLAYERS = 5;    
 
 NextState setupGame(GameContext& context);
 int readIntInRange(unsigned int min,
