@@ -76,24 +76,24 @@ NextState setupGame(GameContext& context)
         "game\n");
 
     printMessage(context.io.outputStream, "First things first: how many human players will be joining the game? (up to 5!)\n");
-    int humanPlayers = readIntInRange(1, 5, context.io);
+    int humanPlayers = readIntInRange(1, MAX_PLAYERS, context.io);
 
     printMessage(context.io.outputStream, "And how many fearless computer-controlled players shall we unleash? (again, no more than 5)\n");
     int minComputerPlayers = (humanPlayers > 1) ? 0 : 1;
-    int computerPlayers = readIntInRange(minComputerPlayers, 5, context.io);
+    int computerPlayers = readIntInRange(minComputerPlayers, MAX_PLAYERS, context.io);
 
     printMessage(
         context.io.outputStream, "Perfect! That makes us ", (humanPlayers + computerPlayers), ". Now, to keep things organized, let's name our heroes\n");
     createPlayers(context, humanPlayers, computerPlayers);
 
     printMessage(context.io.outputStream, "Let's craft the board now. How many tiles across? (it should be a number between 24 and 50)\n");
-    context.board.width = readIntInRange(24, 50, context.io);
+    context.board.width = readIntInRange(MIN_BOARD_SIZE, MAX_BOARD_SIZE, context.io);
 
     printMessage(context.io.outputStream, "Now, how many tiles from top to bottom? (again, between 24 and 50)\n");
-    context.board.height = readIntInRange(24, 50, context.io);
+    context.board.height = readIntInRange(MIN_BOARD_SIZE, MAX_BOARD_SIZE, context.io);
 
     printMessage(context.io.outputStream, "Final step: how many mines should we drop? (let's say, between 3 and 8)\n");
-    context.board.initialMines = readIntInRange(3, 8, context.io);
+    context.board.initialMines = readIntInRange(MIN_MINES, MAX_MINES, context.io);
 
     for (Player& player : context.players)
     {
