@@ -76,7 +76,7 @@ NextState setupGame(GameContext& context)
         "game\n");
 
     printMessage(context.io.outputStream, "First things first: how many human players will be joining the game? (up to 5!)\n");
-    int humanPlayers = readIntInRange(1, MAX_BOARD_SIZE, context.io);
+    int humanPlayers = readIntInRange(1, MAX_PLAYERS, context.io);
 
     printMessage(context.io.outputStream, "And how many fearless computer-controlled players shall we unleash? (again, no more than 5)\n");
     int minComputerPlayers = (humanPlayers > 1) ? 0 : 1;
