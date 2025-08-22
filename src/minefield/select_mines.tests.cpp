@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
-#include <minefield/show_board.h>
-#include <minefield/setup_game.h>
-#include <minefield/select_mines.h>
 #include <minefield/create_test_game.h>
+#include <minefield/select_mines.h>
+#include <minefield/setup_game.h>
+#include <minefield/show_board.h>
 
 TEST(MINES, selectMines_transitions_to_selectGuesses) {
 
