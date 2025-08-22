@@ -3,6 +3,7 @@
 #include <minefield/minefield.h>
 #include <minefield/setup_game.h>
 #include <minefield/show_board.h>
+#include <minefield/create_test_game.h>
 
 TEST(INPUT, input_validation_works_correctly) {
 	auto getOutputofReading = [](unsigned int min, unsigned int max, unsigned int value) { //
@@ -31,17 +32,18 @@ TEST(INPUT, input_validation_works_correctly) {
 }
 
 TEST(SETUP, game_is_set_up_correctly) { // made by agus to guide me, thanks agus!
-	std::istringstream fakeInput("1\n2\nRoberto\n24\n24\n3\n");
+	std::istringstream fakeInput;
 	std::ostringstream fakeOutput;
 
 	GameContext context;
+
 	context.io.inputStream = fakeInput;
 	context.io.outputStream = fakeOutput;
-
-	NextState next = setupGame(context);
-
+	NextState next = createTestGame(context, 1, 2, 24, 24, 3);
+	
+	
 	EXPECT_EQ(context.players.size(), 3);
-	EXPECT_EQ(context.players[0].name, "Roberto");
+	EXPECT_EQ(context.players[0].name, "human_1");
 	EXPECT_EQ(context.board.width, 24);
 	EXPECT_EQ(context.board.height, 24);
 	EXPECT_EQ(context.board.initialMines, 3);
