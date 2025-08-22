@@ -18,17 +18,16 @@ TEST(INPUT, input_validation_works_correctly) {
 		GameContext context;
 		context.io.inputStream = fakeInput;
 		context.io.outputStream = fakeOutput;
-		//readIntInRange(min, max, context.io);
+		readIntInRange(min, max, context.io);
 		return fakeOutput.str();
 	};
-	/*
+	
 	std::string expectedErrorMessage = "Too wild! Choose something in the safe zone";
 	EXPECT_EQ(getOutputofReading(0, 5, 3).find(expectedErrorMessage), std::string::npos);
-	EXPECT_EQ(getOutputofReading(0, 5, 9).find(expectedErrorMessage), std::string::npos);
+	EXPECT_NE(getOutputofReading(0, 5, 9).find(expectedErrorMessage), std::string::npos); 
 	EXPECT_EQ(getOutputofReading(0, 5, 5).find(expectedErrorMessage), std::string::npos);
-	EXPECT_EQ(getOutputofReading(-1, 5, 3).find(expectedErrorMessage), std::string::npos);
-	EXPECT_NE(getOutputofReading(0, 5, 9).find(expectedErrorMessage), std::string::npos);
-	//EXPECT_ANY_THROW(getOutputofReading(5, 0, 9));*/
+	//EXPECT_EQ(getOutputofReading(-1, 5, 3).find(expectedErrorMessage), std::string::npos); // currently the following tests hang up the program 
+	// EXPECT_ANY_THROW(getOutputofReading(5, 0, 9));
 }
 
 TEST(SETUP, game_is_set_up_correctly) { // made by agus to guide me, thanks agus!
