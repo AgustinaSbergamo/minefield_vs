@@ -13,7 +13,6 @@ State createTestGame(GameContext &context, unsigned int humanPlayers, unsigned i
 	inputString.append(std::to_string(initialMines) + "\n"); // initial mines
 
 	std::istringstream fakeInput(inputString);
-	std::cout << inputString << std::endl;
 	context.io.inputStream = fakeInput;
 
 	return setupGame(context);
