@@ -45,3 +45,48 @@ TEST(MINES, selectMines_places_mines_in_specified_spot) {
 		}
 	}
 }
+
+TEST(MINES, selectMines_handles_invalid_inputs) {
+
+	GameContext context;
+	std::ostringstream fakeOutput;
+	context.io.outputStream = fakeOutput;
+
+	int humanPlayers = 1; //there will be only one human player
+	int botPlayers = MAX_PLAYERS - humanPlayers;
+	NextState next = createTestGame(context, humanPlayers, botPlayers, MAX_BOARD_SIZE, MAX_BOARD_SIZE, MIN_MINES);
+
+	std::string mineInput = ""; 
+	int validPosition = 1;
+	int invalidPosition = (MAX_BOARD_SIZE * MAX_BOARD_SIZE) + 1; 
+
+	for (int player = 0; player < humanPlayers; player++) { // for each human player in the game
+		for (int mine = 0; mine < context.players[player].mines.size(); mine++) { // for each mine the player can place
+			mineInput.append(std::to_string(invalidPosition) + "\n"); //we input an invalid position
+			mineInput.append(std::to_string(validPosition) + "\n");  //then, when asked for correction, we input a valid position
+			validPosition++;
+		}
+	}
+
+	std::istringstream fakeInput(mineInput);
+	context.io.inputStream = fakeInput;
+	selectMines(context);
+
+	std::string output = fakeOutput.str();
+	std::cout << output << std::endl;
+	std::string expectedErrorMessage = "Error:";
+	size_t positionOfErrorInOutput;
+	for (int mine = 0; mine < context.players[0].mines.size(); mine++) {
+		// there will be an amount of ocurrences of "Error:" equal to the number of mines of the human player
+		// thusly, we assert to find that number of substrings pertaining to manualMineSelection's invalid input response in the output string
+		positionOfErrorInOutput = output.find(expectedErrorMessage); 
+		ASSERT_NE(positionOfErrorInOutput, output.npos);
+		output.erase(0, positionOfErrorInOutput + expectedErrorMessage.size());
+		std::cout << output << std::endl;
+	}
+	// lastly we expect there to be no more ocurrences
+	positionOfErrorInOutput = output.find(expectedErrorMessage);
+	std::cout << output << std::endl;
+	ASSERT_EQ(positionOfErrorInOutput, output.npos);
+	std::cout << output << std::endl;
+}

@@ -1,10 +1,10 @@
 #include <minefield/create_test_game.h>
 
 //helper function for quickly instantiating games without user input
-State createTestGame(GameContext &context, unsigned int humanPlayers, unsigned int botPlayers, unsigned int width, unsigned int height, int initialMines) {
+State createTestGame(GameContext &context, unsigned int humanPlayers, unsigned int computerPlayers, unsigned int width, unsigned int height, int initialMines) {
 	std::string inputString = "";
 	inputString.append(std::to_string(humanPlayers) + "\n"); // human players
-	inputString.append(std::to_string(botPlayers) + "\n"); //bot players
+	inputString.append(std::to_string(computerPlayers) + "\n"); // bot players
 	for (int i = 1; i <= humanPlayers; i++) { // name of every human
 		inputString.append("human_" + std::to_string(i) + "\n");
 	}

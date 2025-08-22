@@ -55,13 +55,13 @@ void manualMineSelection(int selectionSize,
 
             if (std::find(availableCells.begin(), availableCells.end(), selectedCell) == availableCells.end())
             {
-                printMessage(io.outputStream, "Cell ", selectedCell, " is disabled! Please choose another one\n");
+                printMessage(io.outputStream, "Error: Cell ", selectedCell, " is disabled! Please choose another one\n");
                 continue;
             }
 
             if (std::find(minesVector.begin(), minesVector.end(), selectedCell) != minesVector.end())
             {
-                printMessage(io.outputStream, "You already picked cell ", std::to_string(selectedCell), ". Please choose a different one!\n");
+                printMessage(io.outputStream, "Error: You already picked cell ", std::to_string(selectedCell), ". Please choose a different one!\n");
                 continue;
             }
 
