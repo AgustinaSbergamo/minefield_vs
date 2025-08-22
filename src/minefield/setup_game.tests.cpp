@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <minefield/create_test_game.h>
+#include <minefield/testing_utils.h>
 #include <minefield/minefield.h>
 #include <minefield/setup_game.h>
 #include <minefield/show_board.h>
@@ -9,20 +9,16 @@ TEST(INPUT, input_validation_works_correctly) {
 	auto getOutputofReading = [](unsigned int min, unsigned int max, unsigned int value) { // gets the console output when an input string is sent to the readIntInRange function
 		std::string input = "";
 		input.append(std::to_string(value) + "\n");
-		if (value < min || value > max) {
+		if (value < min || value > max) { // if input is invalid, the game will asks us to input a valid value
 			input.append(std::to_string(max) + "\n");
 		}
-		std::istringstream fakeInput(input); // the input string consists of of entering a value, then entering another value of the first value is not withing the specified range
-		// we need to implement the following logic for creating a context in every function, since input and output stream are references to values that will be destroyed outside their scope
-		// meaning we can't make a fixture that can be shared among all of them since the streams will be destroyed when the setUp is finished
-		std::ostringstream fakeOutput;
-		GameContext context;
-		context.io.inputStream = fakeInput;
-		context.io.outputStream = fakeOutput;
-		readIntInRange(min, max, context.io);
-		return fakeOutput.str();
+		TestSystem setup;
+		GameContext context = setup.context;
+		setup.setInputBuffer(input); // the input string consists of of entering a value, then entering another value of the first one is not within the specified range
+		readIntInRange(min, max, setup.context.io);
+		std::cout << setup.getOutputBuffer() << std::endl;
+		return setup.getOutputBuffer();
 	};
-
 	std::string expectedErrorMessage = "Too wild! Choose something in the safe zone";
 	EXPECT_EQ(getOutputofReading(0, 5, 3).find(expectedErrorMessage), std::string::npos);
 	EXPECT_EQ(getOutputofReading(0, 5, 5).find(expectedErrorMessage), std::string::npos);
@@ -60,8 +56,9 @@ TEST(SETUP, board_does_not_accept_invalid_values) {
 		auto buildDimensionString = [](int dimension) { // build the string of player inputs for each dimension
 			std::string gameDimensionInputString = "";
 			gameDimensionInputString.append(std::to_string(dimension) + "\n");
-			if (dimension > MAX_BOARD_SIZE || dimension < MIN_BOARD_SIZE) // if this is the case, the program will output an error message and will ask for input again
+			if (dimension > MAX_BOARD_SIZE || dimension < MIN_BOARD_SIZE) { // if this is the case, the program will output an error message and will ask for input again
 				gameDimensionInputString.append(std::to_string(MAX_BOARD_SIZE) + "\n"); // this time we create an input that will be accepted
+			}
 			return gameDimensionInputString;
 		};
 

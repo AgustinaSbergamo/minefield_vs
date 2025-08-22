@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <minefield/create_test_game.h>
+#include <minefield/testing_utils.h>
 #include <minefield/select_mines.h>
 #include <minefield/setup_game.h>
 #include <minefield/show_board.h>
@@ -46,7 +46,7 @@ TEST(MINES, selectMines_places_mines_in_specified_spot) {
 	}
 }
 
-TEST(MINES, selectMines_handles_invalid_inputs) {
+TEST(MINES, selectMines_handles_out_of_bounds_inputs) {
 
 	GameContext context;
 	std::ostringstream fakeOutput;
@@ -73,8 +73,7 @@ TEST(MINES, selectMines_handles_invalid_inputs) {
 	selectMines(context);
 
 	std::string output = fakeOutput.str();
-	std::cout << output << std::endl;
-	std::string expectedErrorMessage = "Error:";
+	std::string expectedErrorMessage = "Please choose a different one";
 	size_t positionOfErrorInOutput;
 	for (int mine = 0; mine < context.players[0].mines.size(); mine++) {
 		// there will be an amount of ocurrences of "Error:" equal to the number of mines of the human player
@@ -82,11 +81,8 @@ TEST(MINES, selectMines_handles_invalid_inputs) {
 		positionOfErrorInOutput = output.find(expectedErrorMessage); 
 		ASSERT_NE(positionOfErrorInOutput, output.npos);
 		output.erase(0, positionOfErrorInOutput + expectedErrorMessage.size());
-		std::cout << output << std::endl;
 	}
 	// lastly we expect there to be no more ocurrences
 	positionOfErrorInOutput = output.find(expectedErrorMessage);
-	std::cout << output << std::endl;
 	ASSERT_EQ(positionOfErrorInOutput, output.npos);
-	std::cout << output << std::endl;
 }
