@@ -51,21 +51,19 @@ TEST(SETUP, game_is_set_up_correctly) { // made by agus to guide me, thanks agus
 }
 
 TEST(SETUP, board_does_not_accept_invalid_values) {
-	int const MAXWIDTH = 50;
-	int const MAXHEIGHT = 50;
 
 	auto buildInputString = [](int width, int height) {					  // build the string of player inputs for the game width and height definitions
-		auto buildDimensionString = [](int dimension, int dimensionMax) { // build the string of player inputs for each dimension
+		auto buildDimensionString = [](int dimension) { // build the string of player inputs for each dimension
 			std::string gameDimensionInputString = "";
 			gameDimensionInputString.append(std::to_string(dimension) + "\n");
 			if (dimension > MAX_BOARD_SIZE || dimension < MIN_BOARD_SIZE)			  // if this is the case, the program will output an error message and will ask for input again
-				gameDimensionInputString.append(std::to_string(dimensionMax) + "\n"); // this time we create an input that will be accepted
+				gameDimensionInputString.append(std::to_string(MAX_BOARD_SIZE) + "\n"); // this time we create an input that will be accepted
 			return gameDimensionInputString;
 		};
 
 		std::string gameDimensionsInputString = "";
-		gameDimensionsInputString.append(buildDimensionString(width, MAXWIDTH));
-		gameDimensionsInputString.append(buildDimensionString(height, MAXHEIGHT));
+		gameDimensionsInputString.append(buildDimensionString(width));
+		gameDimensionsInputString.append(buildDimensionString(height));
 		return gameDimensionsInputString;
 	};
 
