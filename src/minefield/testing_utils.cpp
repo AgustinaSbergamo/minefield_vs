@@ -1,26 +1,28 @@
 #include <minefield/testing_utils.h>
 
-std::string TestSetup::getInputBuffer() {
-	return fakeInput.str();
+std::string getInputBuffer(TestContext const &testContext) {
+	return testContext.fakeInput.str();
 }
-void TestSetup::setInputBuffer(std::string input) {
-	fakeInput.rdbuf()->str(input);
+void setInputBuffer(TestContext &testContext, std::string input) {
+	testContext.fakeInput.rdbuf()->str(input);
 }
-std::string TestSetup::getOutputBuffer() {
-	return fakeOutput.str();
+std::string getOutputBuffer(TestContext const &testContext) {
+	return testContext.fakeOutput.str();
 }
-void TestSetup::setOutputBuffer(std::string input) {
-	fakeOutput.rdbuf()->str(input);
+void setOutputBuffer(TestContext &testContext, std::string input) {
+	testContext.fakeOutput.rdbuf()->str(input);
 }
 
 template <typename T>
 void addInput(std::string &currentInput, T const& newInput) {
-	currentInput.append(std::to_string(newInput) + "\n");
+	std::ostringstream mockputStream;
+	mockputStream << newInput;
+	currentInput.append(mockputStream.str() + '\n');
 }
 
 //helper function for quickly instantiating games without user input
-State createTestGame(GameContext &context, unsigned int humanPlayers, unsigned int computerPlayers, unsigned int width, unsigned int height, int initialMines) {
-	std::string inputString = "";
+State setupTestGame(TestContext &testContext, unsigned int humanPlayers, unsigned int computerPlayers, unsigned int width, unsigned int height, int initialMines) {
+	std::string inputString;
 	addInput(inputString, humanPlayers);// human players
 	addInput(inputString, computerPlayers);// bot players
 	for (int i = 1; i <= humanPlayers; i++) { // name of every human
@@ -29,8 +31,7 @@ State createTestGame(GameContext &context, unsigned int humanPlayers, unsigned i
 	addInput(inputString, width);//width of board
 	addInput(inputString, height);// height of board
 	addInput(inputString, initialMines);// initial mines
-	std::istringstream fakeInput(inputString);
-	context.io.inputStream = fakeInput;
+	setInputBuffer(testContext, inputString);
 
-	return setupGame(context);
+	return setupGame(testContext.context);
 }

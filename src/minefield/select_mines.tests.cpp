@@ -5,25 +5,20 @@
 #include <minefield/show_board.h>
 
 TEST(MINES, selectMines_transitions_to_selectGuesses) {
-
-	GameContext context;
-	std::istringstream fakeInput;
-	std::ostringstream fakeOutput;
-	context.io.inputStream = fakeInput;
-	context.io.outputStream = fakeOutput;
-	NextState next = createTestGame(context, 1, 4, 30, 30, 8);
-	ASSERT_EQ(next.updateFunction, &showBoard);
+	TestContext testContext;
+	GameContext &context = testContext.context;
+	NextState next = setupTestGame(testContext, 1, 4, 30, 30, 8);
+	EXPECT_EQ(next.updateFunction, &showBoard);
 }
 
 TEST(MINES, selectMines_places_mines_in_specified_spot) {
 
-	GameContext context;
-	std::ostringstream fakeOutput;
-	context.io.outputStream = fakeOutput;
+	TestContext testContext;
+	GameContext& context = (testContext.context);
 
 	int humanPlayers = MAX_PLAYERS;
-	int botPlayers = MAX_PLAYERS - humanPlayers;
-	NextState next = createTestGame(context, humanPlayers, botPlayers, MAX_BOARD_SIZE, MAX_BOARD_SIZE, MAX_MINES);
+	int computerPlayers = MAX_PLAYERS - humanPlayers;
+	NextState next = setupTestGame(testContext, humanPlayers, computerPlayers, MAX_BOARD_SIZE, MAX_BOARD_SIZE, MAX_MINES);
 
 	std::string mineInput = ""; // build input for selectMines function
 	int i = 1; // position of mine
@@ -33,8 +28,9 @@ TEST(MINES, selectMines_places_mines_in_specified_spot) {
 			i++;
 		}
 	}
-	std::istringstream fakeInput(mineInput);
-	context.io.inputStream = fakeInput;
+	setInputBuffer(testContext, mineInput);
+	//std::istringstream fakeInput(mineInput);
+	//context.io.inputStream = fakeInput;
 	selectMines(context);
 
 	i = 1;
@@ -48,13 +44,11 @@ TEST(MINES, selectMines_places_mines_in_specified_spot) {
 
 TEST(MINES, selectMines_handles_out_of_bounds_inputs) {
 
-	GameContext context;
-	std::ostringstream fakeOutput;
-	context.io.outputStream = fakeOutput;
-
+	TestContext testContext;
+	GameContext &context = testContext.context;
 	int humanPlayers = 1; //there will be only one human player
-	int botPlayers = MAX_PLAYERS - humanPlayers;
-	NextState next = createTestGame(context, humanPlayers, botPlayers, MAX_BOARD_SIZE, MAX_BOARD_SIZE, MIN_MINES);
+	int computerPlayers = MAX_PLAYERS - humanPlayers;
+	NextState next = setupTestGame(testContext, humanPlayers, computerPlayers, MAX_BOARD_SIZE, MAX_BOARD_SIZE, MIN_MINES);
 
 	std::string mineInput = ""; 
 	int validPosition = 1;
@@ -72,7 +66,7 @@ TEST(MINES, selectMines_handles_out_of_bounds_inputs) {
 	context.io.inputStream = fakeInput;
 	selectMines(context);
 
-	std::string output = fakeOutput.str();
+	std::string output = getOutputBuffer(testContext);
 	std::string expectedErrorMessage = "Please choose a different one";
 	size_t positionOfErrorInOutput;
 	for (int mine = 0; mine < context.players[0].mines.size(); mine++) {

@@ -3,19 +3,18 @@
 #include <minefield/setup_game.h>
 #include <sstream>
 
-struct TestSystem { // it contains a game context and a readable/writeable interface
+
+
+struct TestContext { // it contains a game context and a readable/writeable interface
 public:
 	GameContext context{.io{fakeOutput, fakeInput}}; // context initialized with mocked input and output
-
-	std::string getInputBuffer();
-	void setInputBuffer(std::string input);
-	std::string getOutputBuffer();
-	void setOutputBuffer(std::string input);
-
-private: // fakeInput and fakeOutput must exist for them to be referenced by gamecontext.io members, so we set them private
-	std::istringstream fakeInput;
-	std::ostringstream fakeOutput;
-	
+	std::istringstream fakeInput; // must keep fakeInput and Output alive during test execution
+	std::ostringstream fakeOutput; // thus we need to keep them as variables, public ones so the free functions declared below can acces them
 };
 
-State createTestGame(GameContext &context, unsigned int humanPlayers, unsigned int computerPlayers, unsigned int width, unsigned int height, int initialMines);
+std::string getInputBuffer(TestContext const &testContext);
+void setInputBuffer(TestContext &testContext, std::string input);
+std::string getOutputBuffer(TestContext const &testContext);
+void setOutputBuffer(TestContext &testContext, std::string input);
+
+State setupTestGame(TestContext &testContext, unsigned int humanPlayers = 1, unsigned int computerPlayers = 2, unsigned int width = 24, unsigned int height = 24, int initialMines = 3);
