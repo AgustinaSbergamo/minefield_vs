@@ -1,3 +1,5 @@
 build
 build-clang
 
+.clang-format
+.vscode/settings.json
