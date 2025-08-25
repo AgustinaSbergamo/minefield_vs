@@ -29,8 +29,6 @@ TEST(MINES, selectMines_places_mines_in_specified_spot) {
 		}
 	}
 	setInputBuffer(testContext, mineInput);
-	//std::istringstream fakeInput(mineInput);
-	//context.io.inputStream = fakeInput;
 	selectMines(context);
 
 	i = 1;
@@ -61,7 +59,6 @@ TEST(MINES, selectMines_handles_out_of_bounds_inputs) {
 			validPosition++;
 		}
 	}
-
 	std::istringstream fakeInput(mineInput);
 	context.io.inputStream = fakeInput;
 	selectMines(context);
@@ -70,8 +67,6 @@ TEST(MINES, selectMines_handles_out_of_bounds_inputs) {
 	std::string expectedErrorMessage = "Please choose a different one";
 	size_t positionOfErrorInOutput;
 	for (int mine = 0; mine < context.players[0].mines.size(); mine++) {
-		// there will be an amount of ocurrences of "Error:" equal to the number of mines of the human player
-		// thusly, we assert to find that number of substrings pertaining to manualMineSelection's invalid input response in the output string
 		positionOfErrorInOutput = output.find(expectedErrorMessage); 
 		ASSERT_NE(positionOfErrorInOutput, output.npos);
 		output.erase(0, positionOfErrorInOutput + expectedErrorMessage.size());
