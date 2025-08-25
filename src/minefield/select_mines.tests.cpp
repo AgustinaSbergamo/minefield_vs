@@ -34,7 +34,7 @@ TEST(MINES, selectMines_places_mines_in_specified_spot) {
 	i = 1;
 	for (int player = 0; player < humanPlayers; player++) { // for each player in the game
 		for (int mine = 0; mine < context.players[player].mines.size(); mine++) { // for each mine the player can place
-			EXPECT_EQ(context.players[player].mines[mine], i);
+			EXPECT_EQ(context.players[player].mines[mine], i); // each player should have the corresponding amount of mines
 			i++;
 		}
 	}
@@ -64,12 +64,16 @@ TEST(MINES, selectMines_handles_out_of_bounds_inputs) {
 	selectMines(context);
 
 	std::string output = getOutputBuffer(testContext);
-	std::string expectedErrorMessage = "Please choose a different one";
+	std::string expectedErrorMessage = "Please choose a different one"; // if error message is changed, so too should this variable
 	size_t positionOfErrorInOutput;
-	for (int mine = 0; mine < context.players[0].mines.size(); mine++) {
-		positionOfErrorInOutput = output.find(expectedErrorMessage); 
-		ASSERT_NE(positionOfErrorInOutput, output.npos);
-		output.erase(0, positionOfErrorInOutput + expectedErrorMessage.size());
+	for (int player = 0; player < humanPlayers; player++) {
+		for (int mine = 0; mine < context.players[player].mines.size(); mine++) {
+			positionOfErrorInOutput = output.find(expectedErrorMessage);
+			// we expect there to be an amount of errors equal to the amount of mines placed by a human, since we make a mistake for each one
+			// for this, we use the find function, which returns npos if the substring is not found within the string
+			ASSERT_NE(positionOfErrorInOutput, output.npos);
+			output.erase(0, positionOfErrorInOutput + expectedErrorMessage.size()); // we delete the input string until the currect ocurrence of an error
+		}
 	}
 	// lastly we expect there to be no more ocurrences
 	positionOfErrorInOutput = output.find(expectedErrorMessage);
