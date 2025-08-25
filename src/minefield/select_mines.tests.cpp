@@ -40,30 +40,34 @@ TEST(MINES, selectMines_places_mines_in_specified_spot) {
 	}
 }
 
-TEST(MINES, selectMines_handles_out_of_bounds_inputs) {
-
-	TestContext testContext;
-	GameContext &context = testContext.context;
-	int humanPlayers = 1; //there will be only one human player
-	int computerPlayers = MAX_PLAYERS - humanPlayers;
-	NextState next = setupTestGame(testContext, humanPlayers, computerPlayers, MAX_BOARD_SIZE, MAX_BOARD_SIZE, MIN_MINES);
-
-	std::string mineInput = ""; 
+std::string getSelectionOutput(std::function<NextState(GameContext&)> selectFunction, unsigned int humanPlayers, TestContext &testContext) {
+	std::string mineInput = "";
 	int validPosition = 1;
-	int invalidPosition = (MAX_BOARD_SIZE * MAX_BOARD_SIZE) + 1; 
+	int invalidPosition = (MAX_BOARD_SIZE * MAX_BOARD_SIZE) + 1;
 
 	for (int player = 0; player < humanPlayers; player++) { // for each human player in the game
-		for (int mine = 0; mine < context.players[player].mines.size(); mine++) { // for each mine the player can place
-			mineInput.append(std::to_string(invalidPosition) + "\n"); //we input an invalid position
-			mineInput.append(std::to_string(validPosition) + "\n");  //then, when asked for correction, we input a valid position
+		for (int mine = 0; mine < testContext.context.players[player].mines.size(); mine++) { // for each mine the player can place
+			mineInput.append(std::to_string(invalidPosition) + "\n"); // we input an invalid position
+			mineInput.append(std::to_string(validPosition) + "\n"); // then, when asked for correction, we input a valid position
 			validPosition++;
 		}
 	}
 	std::istringstream fakeInput(mineInput);
-	context.io.inputStream = fakeInput;
-	selectMines(context);
+	testContext.context.io.inputStream = fakeInput;
+	selectFunction(testContext.context);
 
-	std::string output = getOutputBuffer(testContext);
+	return getOutputBuffer(testContext);
+}
+
+void testSelection(std::function<NextState(GameContext &)> selectFunction) { // common test function for selectMines and selectGuesses
+	TestContext testContext;
+	GameContext &context = testContext.context;
+	int humanPlayers = 1; // there will be only one human player
+	int computerPlayers = MAX_PLAYERS - humanPlayers;
+	NextState next = setupTestGame(testContext, humanPlayers, computerPlayers, MAX_BOARD_SIZE, MAX_BOARD_SIZE, MIN_MINES);
+
+	std::string output = getSelectionOutput(selectGuesses, humanPlayers, testContext);
+
 	std::string expectedErrorMessage = "Please choose a different one"; // if error message is changed, so too should this variable
 	size_t positionOfErrorInOutput;
 	for (int player = 0; player < humanPlayers; player++) {
@@ -78,4 +82,12 @@ TEST(MINES, selectMines_handles_out_of_bounds_inputs) {
 	// lastly we expect there to be no more ocurrences
 	positionOfErrorInOutput = output.find(expectedErrorMessage);
 	ASSERT_EQ(positionOfErrorInOutput, output.npos);
+}
+
+TEST(MINES, selectMines_handles_out_of_bounds_inputs) {
+	testSelection(selectMines);
+}
+
+TEST(GUESSES, selectGuesses_handles_out_of_bounds_inputs) {
+	testSelection(selectGuesses);
 }
