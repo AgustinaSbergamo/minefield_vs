@@ -40,7 +40,7 @@ TEST(MINES, selectMines_places_mines_in_specified_spot) {
 	}
 }
 
-std::string getSelectionOutput(std::function<NextState(GameContext&)> selectFunction, unsigned int humanPlayers, TestContext &testContext) {
+std::string getSelectionOutput(std::function<NextState(GameContext&)> selectFunction, unsigned int humanPlayers, TestContext &testContext) { // returns the console output for a set of valid and invalid inputs
 	std::string mineInput = "";
 	int validPosition = 1;
 	int invalidPosition = (MAX_BOARD_SIZE * MAX_BOARD_SIZE) + 1;
