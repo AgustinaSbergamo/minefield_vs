@@ -10,7 +10,11 @@ int readIntInRange(unsigned int min, unsigned int max, GameContext::IO& io, GetI
 {
     unsigned int input = 0;
     bool validInput = false;
-
+    
+    if (min > max)
+    {
+        std::swap(min, max);
+    }
     while (!validInput)
     {
         input = getInput(io.inputStream, io.outputStream);
