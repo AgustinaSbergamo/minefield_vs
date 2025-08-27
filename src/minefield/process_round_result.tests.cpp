@@ -15,7 +15,6 @@ TEST(PROCESSING, processRoundResult_leads_to_game_continuation) {
 	EXPECT_EQ(state.updateFunction, showBoard);
 }
 
-/* currently crashes, raised issue #2 in github
 TEST(PROCESSING, processRoundResult_leads_to_game_end_with_winner) {
 	TestContext testContext;
 	GameContext &context = testContext.context;
@@ -34,7 +33,7 @@ TEST(PROCESSING, processRoundResult_leads_to_game_end_with_winner) {
 		EXPECT_EQ(state.updateFunction, exitGame);
 		
 	}
-}*/
+}
 
 TEST(PROCESSING, processRoundResult_leads_to_game_end_in_draw_no_mines) {
 	TestContext testContext;
