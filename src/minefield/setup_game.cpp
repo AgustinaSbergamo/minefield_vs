@@ -10,7 +10,7 @@ int readIntInRange(unsigned int min, unsigned int max, GameContext::IO& io, GetI
 {
     unsigned int input = 0;
     bool validInput = false;
-    
+
     if (min > max)
     {
         std::swap(min, max);
@@ -105,6 +105,8 @@ NextState setupGame(GameContext& context)
         player.guesses = std::vector<unsigned int>(context.board.initialMines);
     }
 
+    context.board.boardCells.clear();
+    context.board.availableCells.clear();
     for (int i = 0; i < context.board.width * context.board.height; i++)
     {
         context.board.boardCells.push_back(i + 1);
