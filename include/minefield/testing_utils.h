@@ -12,6 +12,9 @@ public:
 	std::ostringstream fakeOutput; // thus we need to keep them as variables, public ones so the free functions declared below can acces them
 };
 
+template <typename T>
+void concatInput(std::string &currentInput, T const newInput);
+
 std::string getInputBuffer(TestContext const &testContext);
 void setInputBuffer(TestContext &testContext, std::string input);
 std::string getOutputBuffer(TestContext const &testContext);

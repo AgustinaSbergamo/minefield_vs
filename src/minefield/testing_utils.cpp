@@ -14,7 +14,7 @@ void setOutputBuffer(TestContext &testContext, std::string input) {
 }
 
 template <typename T>
-void addInput(std::string &currentInput, T const& newInput) {
+void concatInput(std::string &currentInput, T const newInput) {
 	std::ostringstream mockputStream;
 	mockputStream << newInput;
 	currentInput.append(mockputStream.str() + '\n');
@@ -25,14 +25,14 @@ State setupTestGame(TestContext &testContext, unsigned int humanPlayers, unsigne
 	std::string inputString;
 	if (humanPlayers < 1) throw std::exception("must be at least one human player!");
 
-	addInput(inputString, humanPlayers);// human players
-	addInput(inputString, computerPlayers);// bot players
+	concatInput(inputString, humanPlayers);// human players
+	concatInput(inputString, computerPlayers);// bot players
 	for (int i = 1; i <= humanPlayers; i++) { // name of every human
-		addInput(inputString, "human_" + std::to_string(i));
+		concatInput(inputString, "human_" + std::to_string(i));
 	}
-	addInput(inputString, width);//width of board
-	addInput(inputString, height);// height of board
-	addInput(inputString, initialMines);// initial mines
+	concatInput(inputString, width);//width of board
+	concatInput(inputString, height);// height of board
+	concatInput(inputString, initialMines);// initial mines
 	setInputBuffer(testContext, inputString);
 
 	return setupGame(testContext.context);
