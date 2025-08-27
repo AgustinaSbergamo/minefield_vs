@@ -7,9 +7,9 @@
 
 auto getOutputofReading = [](unsigned int min, unsigned int max, unsigned int value) { // gets the console output when an input string is sent to the readIntInRange function
 	std::string input = "";
-	input.append(std::to_string(value) + "\n");
+	input.append(std::to_string(value) + '\n');
 	if (value < min || value > max) { // if input is invalid, the game will asks us to input a valid value
-		input.append(std::to_string(max) + "\n");
+		input.append(std::to_string(max) + '\n');
 	}
 	TestContext testContext;
 	setInputBuffer(testContext, input); // the input string consists of of entering a value, then entering another value of the first one is not within the specified range
@@ -48,9 +48,9 @@ TEST(SETUP, game_is_set_up_correctly) { // made by agus to guide me, thanks agus
 auto buildInputString = [](int width, int height) { // build the string of player inputs for the game width and height definitions
 	auto buildDimensionString = [](int dimension) { // build the string of player inputs for each dimension
 		std::string gameDimensionInputString = "";
-		gameDimensionInputString.append(std::to_string(dimension) + "\n");
+		gameDimensionInputString.append(std::to_string(dimension) + '\n');
 		if (dimension > MAX_BOARD_SIZE || dimension < MIN_BOARD_SIZE) { // if this is the case, the program will output an error message and will ask for input again
-			gameDimensionInputString.append(std::to_string(MAX_BOARD_SIZE) + "\n"); // this time we create an input that will be accepted
+			gameDimensionInputString.append(std::to_string(MAX_BOARD_SIZE) + '\n'); // this time we create an input that will be accepted
 		}
 		return gameDimensionInputString;
 	};

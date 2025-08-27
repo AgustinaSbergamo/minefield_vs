@@ -24,7 +24,7 @@ TEST(MINES, selectMines_places_mines_in_specified_spot) {
 	int i = 1; // position of mine
 	for (int player = 0; player < humanPlayers; player++) { // for each player in the game
 		for (int mine = 0; mine < context.players[player].mines.size(); mine++) { // for each mine the player can place
-			mineInput.append(std::to_string(i) + "\n");
+			mineInput.append(std::to_string(i) + '\n');
 			i++;
 		}
 	}
@@ -47,8 +47,8 @@ std::string getSelectionOutput(std::function<NextState(GameContext&)> selectFunc
 
 	for (int player = 0; player < humanPlayers; player++) { // for each human player in the game
 		for (int mine = 0; mine < testContext.context.players[player].mines.size(); mine++) { // for each mine the player can place
-			mineInput.append(std::to_string(invalidPosition) + "\n"); // we input an invalid position
-			mineInput.append(std::to_string(validPosition) + "\n"); // then, when asked for correction, we input a valid position
+			mineInput.append(std::to_string(invalidPosition) + '\n'); // we input an invalid position
+			mineInput.append(std::to_string(validPosition) + '\n'); // then, when asked for correction, we input a valid position
 			validPosition++;
 		}
 	}
