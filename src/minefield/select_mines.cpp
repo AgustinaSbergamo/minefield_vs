@@ -55,7 +55,7 @@ void manualMineSelection(int selectionSize,
 
             if (std::find(availableCells.begin(), availableCells.end(), selectedCell) == availableCells.end())
             {
-                printMessage(io.outputStream, "Cell ", selectedCell, " is disabled! Please choose another one\n");
+                printMessage(io.outputStream, "Cell ", selectedCell, " is disabled! Please choose a different one\n");
                 continue;
             }
 
