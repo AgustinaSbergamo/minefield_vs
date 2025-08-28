@@ -23,8 +23,9 @@ void addInput(std::string &currentInput, T const& newInput) {
 //helper function for quickly instantiating games without user input
 State setupTestGame(TestContext &testContext, unsigned int humanPlayers, unsigned int computerPlayers, unsigned int width, unsigned int height, int initialMines) {
 	std::string inputString;
-	if (humanPlayers < 1) throw std::exception("must be at least one human player!");
-
+	if (humanPlayers < 1) {
+		throw std::exception("must be at least one human player!");
+	}
 	addInput(inputString, humanPlayers);// human players
 	addInput(inputString, computerPlayers);// bot players
 	for (int i = 1; i <= humanPlayers; i++) { // name of every human
